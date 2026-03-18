@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸运大抽奖 - 游戏</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 背景装饰 -->
+        <div class="bg-decoration">
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+
+        <!-- 游戏头部 -->
+        <header class="game-header">
+            <div class="user-info">
+                <div class="level-badge">
+                    <span class="level-icon">⭐</span>
+                    <span class="level-text">等级 <span id="userLevel">1</span></span>
+                </div>
+                <div class="energy-bar">
+                    <span class="energy-icon">⚡</span>
+                    <div class="energy-progress">
+                        <div class="energy-fill" id="energyFill" style="width: 100%"></div>
+                    </div>
+                    <span class="energy-text" id="energyText">10/10</span>
+                </div>
+                <div class="score-info">
+                    <span class="score-icon">🏆</span>
+                    <span class="score-text" id="userScore">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 游戏主界面 -->
+        <main class="game-main">
+            <!-- 游戏选择界面 -->
+            <section class="game-selection" id="gameSelection">
+                <h1 class="title">🎰 幸运大抽奖 🎰</h1>
+                <p class="subtitle">完成小游戏获得抽奖机会</p>
+                
+                <div class="game-cards">
+                    <div class="game-card" data-game="memory">
+                        <div class="game-icon">🧠</div>
+                        <h3>记忆挑战</h3>
+                        <p>记住图案位置，挑战记忆力</p>
+                        <div class="reward-info">
+                            <span class="reward-icon">🎁</span>
+                            <span>1-3次抽奖</span>
+                        </div>
+                    </div>
+                    
+                    <div class="game-card" data-game="reaction">
+                        <div class="game-icon">⚡</div>
+                        <h3>反应挑战</h3>
+                        <p>快速点击目标，测试反应速度</p>
+                        <div class="reward-info">
+                            <span class="reward-icon">🎁</span>
+                            <span>1-3次抽奖</span>
+                        </div>
+                    </div>
+                    
+                    <div class="game-card" data-game="puzzle">
+                        <div class="game-icon">🧩</div>
+                        <h3>拼图挑战</h3>
+                        <p>完成简单拼图，锻炼观察力</p>
+                        <div class="reward-info">
+                            <span class="reward-icon">🎁</span>
+                            <span>1-3次抽奖</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 记忆游戏界面 -->
+            <section class="game-screen memory-game" id="memoryGame" style="display: none;">
+                <div class="game-header-bar">
+                    <button class="back-btn" onclick="backToSelection()">← 返回</button>
+                    <h2>记忆挑战</h2>
+                    <div class="game-stats">
+                        <span class="time-left" id="memoryTime">时间: 30s</span>
+                        <span class="score" id="memoryScore">得分: 0</span>
+                    </div>
+                </div>
+                <div class="memory-grid" id="memoryGrid"></div>
+                <div class="game-controls">
+                    <button class="start-btn" id="memoryStart">开始游戏</button>
+                </div>
+            </section>
+
+            <!-- 反应游戏界面 -->
+            <section class="game-screen reaction-game" id="reactionGame" style="display: none;">
+                <div class="game-header-bar">
+                    <button class="back-btn" onclick="backToSelection()">← 返回</button>
+                    <h2>反应挑战</h2>
+                    <div class="game-stats">
+                        <span class="time-left" id="reactionTime">时间: 10s</span>
+                        <span class="score" id="reactionScore">得分: 0</span>
+                    </div>
+                </div>
+                <div class="reaction-area" id="reactionArea">
+                    <div class="target" id="reactionTarget" style="display: none;"></div>
+                    <div class="game-start" id="reactionStartScreen">
+                        <h3>准备就绪</h3>
+                        <p>点击出现的目标</p>
+                        <button class="start-btn" id="reactionStart">开始游戏</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 拼图游戏界面 -->
+            <section class="game-screen puzzle-game" id="puzzleGame" style="display: none;">
+                <div class="game-header-bar">
+                    <button class="back-btn" onclick="backToSelection()">← 返回</button>
+                    <h2>拼图挑战</h2>
+                    <div class="game-stats">
+                        <span class="moves" id="puzzleMoves">步数: 0</span>
+                        <span class="time" id="puzzleTime">时间: 0s</span>
+                    </div>
+                </div>
+                <div class="puzzle-container" id="puzzleContainer"></div>
+                <div class="game-controls">
+                    <button class="start-btn" id="puzzleStart">开始游戏</button>
+                    <button class="reset-btn" id="puzzleReset">重置</button>
+                </div>
+            </section>
+
+            <!-- 抽奖界面 -->
+            <section class="draw-screen" id="drawScreen" style="display: none;">
+                <div class="game-header-bar">
+                    <button class="back-btn" onclick="backToSelection()">← 返回</button>
+                    <h2>幸运抽奖</h2>
+                    <div class="draw-count">
+                        <span class="draw-icon">🎫</span>
+                        <span id="drawCount">抽奖次数: 0</span>
+                    </div>
+                </div>
+                
+                <!-- 奖品展示区域 -->
+                <div class="prize-display">
+                    <div class="prize-box">
+                        <div class="prize-glow"></div>
+                        <div class="prize-item" id="prizeItem">
+                            <span class="prize-icon">❓</span>
+                            <span class="prize-name">点击抽奖</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 抽奖按钮 -->
+                <button class="draw-btn" id="drawBtn">
+                    <span class="btn-text">开始抽奖</span>
+                    <span class="btn-shine"></span>
+                </button>
+            </section>
+        </main>
+
+        <!-- 中奖弹窗 -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal-content">
+                <div class="modal-glow"></div>
+                <div class="modal-header">
+                    <span class="modal-icon">🎉</span>
+                    <h2>恭喜中奖！</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="reward-display">
+                        <span class="reward-icon" id="rewardIcon">🏆</span>
+                        <span class="reward-name" id="rewardName">特等奖</span>
+                    </div>
+                    <div class="reward-effect" id="rewardEffect"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-close" id="modalClose">确定</button>
+                    <button class="modal-redraw" id="modalRedraw" style="display: none;">再次抽奖</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏结束弹窗 -->
+        <div class="modal-overlay" id="gameOverModal">
+            <div class="modal-content">
+                <div class="modal-glow"></div>
+                <div class="modal-header">
+                    <span class="modal-icon">🎮</span>
+                    <h2>游戏结束</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="game-result">
+                        <p class="result-score">得分: <span id="resultScore">0</span></p>
+                        <p class="result-reward">获得抽奖机会: <span id="resultDraws">0</span>次</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-close" onclick="backToSelection()">返回</button>
+                    <button class="modal-draw" id="resultDrawBtn">去抽奖</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史记录 -->
+        <div class="history-panel">
+            <h3>中奖历史</h3>
+            <ul class="history-list" id="historyList">
+                <li class="history-empty">暂无记录</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
